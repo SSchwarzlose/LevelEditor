@@ -1,0 +1,9 @@
+﻿<Window x:Class="LevelEditor.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Level Editor" Height="600" Width="800">
+    <DockPanel Dock="Bottom" Width="200" Height="80">
+        <Button Name="ButtonQuit" Width="50" Margin="5" Height="25" DockPanel.Dock="Left" Click="OnClickButtonQuit">Quit</Button>
+        <Button Name="ButtonAbout" Width="50" Height="25" Margin="5" DockPanel.Dock="Right" Click="OnClickButtonAbout">About</Button>
+    </DockPanel>
+</Window>

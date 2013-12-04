@@ -1,0 +1,14 @@
+﻿<Window x:Class="LevelEditor.View.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="About" Height="300" Width="150">
+    <Grid>
+        <TextBlock>
+            Sascha Schwarzlose <LineBreak/>
+            GamesProgramming <LineBreak/>
+            <LineBreak/>
+            LevelEditor V 0.1
+        </TextBlock>
+        <Button Name="ButtonClose" Click="OnCLickButtonCloseAbout" Margin="0,244,0,0" Grid.ColumnSpan="2">Close Window</Button>
+    </Grid>
+</Window>
