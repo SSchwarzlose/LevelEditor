@@ -19,14 +19,34 @@
             this.controler = (App)Application.Current;
         }
 
-        private void OnClickButtonQuit(object sender, RoutedEventArgs e)
+        private void CommandExecutedNew(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controler.NewMap();
+        }
+
+        private void CommandExecutedHelp(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controler.ShowHelpWindow();
+        }
+
+        private void CommandExecutedClose(object sender, ExecutedRoutedEventArgs e)
         {
             this.controler.Quit();
         }
 
-        private void OnClickButtonAbout(object sender, RoutedEventArgs e)
+        private void CommandCanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
         {
-            this.controler.ExecuteAbout();
+            e.CanExecute = true;
+        }
+
+        private void CommandCanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void CommandCanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
         }
     }
 }
