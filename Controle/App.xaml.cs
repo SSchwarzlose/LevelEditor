@@ -18,6 +18,8 @@
 
         private Dictionary<string, MapTileType> tileTypes;
 
+        priv    
+
         private Map map;
 
         public void CloseAboutWindow()
@@ -36,6 +38,8 @@
             this.tileTypes.Add(grass.Name, grass);
             this.tileTypes.Add(desert.Name, desert);
             this.tileTypes.Add(water.Name, water);
+
+
         }
 
         public void CreateNewMap()

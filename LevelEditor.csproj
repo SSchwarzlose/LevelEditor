@@ -107,11 +107,16 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\MapTiles\MapTiles.xcf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\MapTiles\Desert.png" />
+    <Resource Include="Resources\MapTiles\Grass.png" />
+    <Resource Include="Resources\MapTiles\Water.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons\StatusAnnotations_Help_and_inconclusive_16xLG.png" />
   </ItemGroup>
