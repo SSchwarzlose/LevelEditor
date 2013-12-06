@@ -7,15 +7,15 @@ namespace LevelEditor.Model
 {
     public class MapTile
     {
-        public Vector2I Position { get; private set; }
-        public string Type { get; private set; }
+        public Vector2I Position { get; set; }
+        public string Type { get; set; }
 
         public MapTile()
         {
         }
 
-        public MapTile(int x, int y, string tileType)
-            : this(new Vector2I(x, y), tileType)
+        public MapTile(int x, int y, string type)
+            : this(new Vector2I(x, y), type)
         {
         }
 

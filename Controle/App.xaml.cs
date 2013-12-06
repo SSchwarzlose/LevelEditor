@@ -20,26 +20,9 @@
 
         private Map map;
 
-        public void Quit()
-        {
-            this.Shutdown();
-        }
-
         public void CloseAboutWindow()
         {
             this.aboutWindow.Close();
-        }
-
-        public void NewMap()
-        {
-            newMapWindow = new NewMapWindow();
-            newMapWindow.Show();
-        }
-
-        public void ShowHelpWindow()
-        {
-            this.aboutWindow = new AboutWindow();
-            aboutWindow.Show();
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
@@ -106,6 +89,49 @@
         private void ShowErrorMessage(string title, string text)
         {
             MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
+        }
+
+        internal void ExecutedNew()
+        {
+            if (this.newMapWindow == null || !this.newMapWindow.IsLoaded)
+            {
+                this.newMapWindow = new NewMapWindow();
+                this.newMapWindow.SetMapTileTypes(this.tileTypes.Keys);
+            }
+
+            this.newMapWindow.Show();
+            this.newMapWindow.Focus();
+        }
+
+        public void ExecutedHelp()
+        {
+            if (this.aboutWindow == null || !this.aboutWindow.IsLoaded)
+            {
+                this.aboutWindow = new AboutWindow();
+            }
+
+            this.aboutWindow.Show();
+            this.aboutWindow.Focus();
+        }
+
+        public void ExecutedClose()
+        {
+            this.Shutdown();
+        }
+
+        public bool CanExecuteNew()
+        {
+            return true;
+        }
+
+        public bool CanExcecuteHelp()
+        {
+            return true;
+        }
+
+        public bool CanExecuteClose()
+        {
+            return true;
         }
     }
 }

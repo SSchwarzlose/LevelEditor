@@ -11,19 +11,27 @@ namespace LevelEditor.Model
 
         private readonly int y;
 
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public int X
+        {
+            get
+            {
+                return this.x;
+            }
+        }
+
+        public int Y
+        {
+            get
+            {
+                return this.y;
+            }
+            
+        }
 
         public Vector2I(int x, int y)
         {
-            if (x >= 0)
-            {
-                this.x = x;
-            }
-            if (y >= 0)
-            {
-                this.y = y;
-            }
+            this.x = x;
+            this.y = y;
         }
     }
 }

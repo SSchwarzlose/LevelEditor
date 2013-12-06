@@ -21,32 +21,32 @@
 
         private void CommandExecutedNew(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.NewMap();
+            this.controler.ExecutedNew();
         }
 
         private void CommandExecutedHelp(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.ShowHelpWindow();
+            this.controler.ExecutedHelp();
         }
 
         private void CommandExecutedClose(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.Quit();
+            this.controler.ExecutedClose();
         }
 
         private void CommandCanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = this.controler.CanExecuteNew();
         }
 
         private void CommandCanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = this.controler.CanExcecuteHelp();
         }
 
         private void CommandCanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = true;
+            e.CanExecute = this.controler.CanExecuteClose();
         }
     }
 }

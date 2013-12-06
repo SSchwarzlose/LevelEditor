@@ -10,7 +10,24 @@
                 <MenuItem Command="ApplicationCommands.Close"/>
             </MenuItem>
         </Menu>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Command="ApplicationCommands.New">
+                    <Image Source="..\Resources\Icons\document_16xLG.png"/>
+                    <Button.ToolTip>
+                        <TextBlock>Neue Map erstellen</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Button Command="ApplicationCommands.Help">
+                    <Image Source="..\Resources\Icons/StatusAnnotations_Help_and_inconclusive_16xLG.png"/>
+                    <Button.ToolTip>
+                        <TextBlock>Zeigt das Hilfefenster</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
     </DockPanel>
+    
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.New"
                         Executed="CommandExecutedNew"
