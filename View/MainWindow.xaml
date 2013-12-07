@@ -4,39 +4,51 @@
         Title="Level Editor" Height="600" Width="800">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_Datei">
+            <MenuItem Header="_File">
                 <MenuItem Command="ApplicationCommands.New"/>
                 <MenuItem Command="ApplicationCommands.Help"/>
                 <MenuItem Command="ApplicationCommands.Close"/>
             </MenuItem>
         </Menu>
+
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar>
                 <Button Command="ApplicationCommands.New">
-                    <Image Source="..\Resources\Icons\document_16xLG.png"/>
+                    <Image Source="../Resources/Icons/document_16xLG.png" />
                     <Button.ToolTip>
-                        <TextBlock>Neue Map erstellen</TextBlock>
+                        <TextBlock>New Map</TextBlock>
                     </Button.ToolTip>
                 </Button>
                 <Button Command="ApplicationCommands.Help">
-                    <Image Source="..\Resources\Icons/StatusAnnotations_Help_and_inconclusive_16xLG.png"/>
+                    <Image Source="../Resources/Icons/StatusAnnotations_Help_and_inconclusive_16xLG.png" />
                     <Button.ToolTip>
-                        <TextBlock>Zeigt das Hilfefenster</TextBlock>
+                        <TextBlock>Help</TextBlock>
                     </Button.ToolTip>
                 </Button>
             </ToolBar>
         </ToolBarTray>
+
+        <DockPanel DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Left" Width="75">
+                <TextBlock Margin="5">Brush</TextBlock>
+                <StackPanel Margin="5" Name="BrushSelectionPanel" />
+            </StackPanel>
+
+            <ScrollViewer DockPanel.Dock="Right" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Canvas Name="MapCanvas"  />
+            </ScrollViewer>
+        </DockPanel>
     </DockPanel>
-    
+
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.New"
-                        Executed="CommandExecutedNew"
-                        CanExecute="CommandCanExecuteNew"/>
+                    Executed="CommandExecutedNew"
+                    CanExecute="CommandCanExecuteNew"/>
         <CommandBinding Command="ApplicationCommands.Help"
-                        Executed="CommandExecutedHelp"
-                        CanExecute="CommandCanExecuteHelp"/>
+                    Executed="CommandExecutedHelp"
+                    CanExecute="CommandCanExecuteHelp"/>
         <CommandBinding Command="ApplicationCommands.Close"
-                        Executed="CommandExecutedClose"
-                        CanExecute="CommandCanExecuteClose"/>
+                    Executed="CommandExecutedClose"
+                    CanExecute="CommandCanExecuteClose"/>
     </Window.CommandBindings>
 </Window>

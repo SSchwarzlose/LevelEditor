@@ -1,8 +1,18 @@
-﻿namespace LevelEditor.Controle
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="App.xaml.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Interaction logic for App.xaml
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace LevelEditor.Controle
 {
     using System;
     using System.Collections.Generic;
     using System.Windows;
+    using System.Windows.Media.Imaging;
 
     using LevelEditor.Model;
     using LevelEditor.View;
@@ -10,18 +20,22 @@
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         private AboutWindow aboutWindow;
 
         private NewMapWindow newMapWindow;
 
+        private MainWindow mainWindow;
+
         private Dictionary<string, MapTileType> tileTypes;
 
-        priv    
+        private Dictionary<string, BitmapImage> tileImages; 
 
         private Map map;
 
+        private MapTileType currentBrush;
+        
         public void CloseAboutWindow()
         {
             this.aboutWindow.Close();
@@ -39,7 +53,19 @@
             this.tileTypes.Add(desert.Name, desert);
             this.tileTypes.Add(water.Name, water);
 
+            this.tileImages = new Dictionary<string, BitmapImage>();
 
+            foreach (var tileType in this.tileTypes.Values)
+            {
+                var imageUri = "pack://application:,,,/Resources/MapTiles/" + tileType.Name + ".png";
+
+                BitmapImage tileImage = new BitmapImage();
+                tileImage.BeginInit();
+                tileImage.UriSource = new Uri(imageUri);
+                tileImage.EndInit();
+
+                this.tileImages.Add(tileType.Name, tileImage);
+            }
         }
 
         public void CreateNewMap()
@@ -79,15 +105,22 @@
 
             var defaultMapTile = this.newMapWindow.SelectedMapTileType;
 
-            for (int x = 0; x < width; x++)
+            for (var x = 0; x < width; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (var y = 0; y < height; y++)
                 {
-                    this.map[x, y] = new MapTile(x,y,defaultMapTile);
+                    this.map[x, y] = new MapTile(x, y, defaultMapTile);
                 }
             }
 
+            this.UpdateCanvas();
+
             this.newMapWindow.Close();
+        }
+
+        private void UpdateCanvas()
+        {
+            this.mainWindow.UpdateMapCanvas(this.map);
         }
 
         private void ShowErrorMessage(string title, string text)
@@ -95,7 +128,7 @@
             MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
         }
 
-        internal void ExecutedNew()
+        public void ExecutedNew()
         {
             if (this.newMapWindow == null || !this.newMapWindow.IsLoaded)
             {
@@ -136,6 +169,34 @@
         public bool CanExecuteClose()
         {
             return true;
+        }
+
+        public void OnTileClicked(Vector2I position)
+        {
+            if (this.currentBrush == null)
+            {
+                return;
+            }
+
+            this.map[position].Type = this.currentBrush.Name;
+
+             this.mainWindow.UpdateMapCanvas(position, this.tileImages[this.currentBrush.Name]);
+        }
+
+        public BitmapImage GetTileImage(string type)
+        {
+            return this.tileImages[type];
+        }
+
+        private void OnActivated(object sender, EventArgs e)
+        {
+            this.mainWindow = (MainWindow)this.MainWindow;
+            this.mainWindow.SetMapTileTypes(this.tileTypes.Keys);
+        }
+
+        public void OnBrushSelected(string brush)
+        {
+            this.currentBrush = this.tileTypes[brush];
         }
     }
 }

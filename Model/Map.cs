@@ -31,6 +31,9 @@ namespace LevelEditor.Model
                 throw new ArgumentOutOfRangeException("height", "height must be greater than 0.");
             }
 
+            this.width = width;
+            this.height = height;
+
             this.Tiles = new MapTile[width, height];
         }
 
@@ -43,6 +46,43 @@ namespace LevelEditor.Model
             set
             {
                 this.Tiles[x, y] = value;
+            }
+        }
+
+        public int Width
+        {
+            get
+            {
+                return this.width;
+            }
+            set
+            {
+                this.width = value;
+            }
+        }
+
+        public int Height
+        {
+            get
+            {
+                return this.height;
+            }
+            set
+            {
+                this.height = value;
+            }
+        }
+
+        public MapTile this[Vector2I position]
+        {
+            get
+            {
+                return this.Tiles[position.X, position.Y];
+            }
+
+            set
+            {
+                this.Tiles[position.X, position.Y] = value;
             }
         }
     }

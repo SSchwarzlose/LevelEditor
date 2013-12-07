@@ -1,0 +1,309 @@
+From 99fc3fb4d37d08997e131292725f00d047418635 Mon Sep 17 00:00:00 2001
+From: SSchwarzlose <saschaschwarzlose@web.de>
+Date: Fri, 6 Dec 2013 10:29:59 +0100
+Subject: [PATCH 1/2] edited newmapwindow.cs
+
+---
+ Controle/App.xaml       |  5 +--
+ Controle/App.xaml.cs    | 83 ++++++++++++++++++++++++++++++++++++++++++++++++-
+ LevelEditor.csproj      |  7 +++++
+ Model/Map.cs            | 31 ++++++++++++++++++
+ View/AboutWindow.xaml   |  2 +-
+ View/MainWindow.xaml    | 22 +++++++++++--
+ View/MainWindow.xaml.cs | 26 ++++++++++++++--
+ 7 files changed, 166 insertions(+), 10 deletions(-)
+
+diff --git a/Controle/App.xaml b/Controle/App.xaml
+index 0a90a8f..b066d05 100644
+--- a/Controle/App.xaml
++++ b/Controle/App.xaml
+@@ -1,8 +1,9 @@
+ ﻿<Application x:Class="LevelEditor.Controle.App"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+-             StartupUri="View\MainWindow.xaml">
++             StartupUri="View\MainWindow.xaml"
++             Startup="OnStartup">
+     <Application.Resources>
+          
+     </Application.Resources>
+-</Application>
++</Application>
+\ No newline at end of file
+diff --git a/Controle/App.xaml.cs b/Controle/App.xaml.cs
+index 29a05bb..62e554c 100644
+--- a/Controle/App.xaml.cs
++++ b/Controle/App.xaml.cs
+@@ -1,7 +1,10 @@
+ ﻿namespace LevelEditor.Controle
+ {
++    using System;
++    using System.Collections.Generic;
+     using System.Windows;
+ 
++    using LevelEditor.Model;
+     using LevelEditor.View;
+ 
+     /// <summary>
+@@ -11,6 +14,12 @@
+     {
+         private AboutWindow aboutWindow;
+ 
++        private NewMapWindow newMapWindow;
++
++        private Dictionary<string, MapTileType> tileTypes;
++
++        private Map map;
++
+         public void Quit()
+         {
+             this.Shutdown();
+@@ -21,10 +30,82 @@
+             this.aboutWindow.Close();
+         }
+ 
+-        public void ExecuteAbout()
++        public void NewMap()
++        {
++            newMapWindow = new NewMapWindow();
++            newMapWindow.Show();
++        }
++
++        public void ShowHelpWindow()
+         {
+             this.aboutWindow = new AboutWindow();
+             aboutWindow.Show();
+         }
++
++        private void OnStartup(object sender, StartupEventArgs e)
++        {
++            this.tileTypes = new Dictionary<string, MapTileType>();
++
++            var grass = new MapTileType(1, "Grass");
++            var desert = new MapTileType(3, "Desert");
++            var water = new MapTileType(5, "Water");
++
++            this.tileTypes.Add(grass.Name, grass);
++            this.tileTypes.Add(desert.Name, desert);
++            this.tileTypes.Add(water.Name, water);
++        }
++
++        public void CreateNewMap()
++        {
++            int width;
++            int height;
++
++            try
++            {
++                width = int.Parse(this.newMapWindow.MapWidthTextBox.Text);
++            }
++            catch (FormatException)
++            {
++                this.ShowErrorMessage("Incorect Width", "Please enter a valid Map width.");
++                return;
++            }
++
++            try
++            {
++                height = int.Parse((this.newMapWindow.MapHeighTextBox.Text));
++            }
++            catch (FormatException)
++            {
++                this.ShowErrorMessage("Incorect Height", "Pleaser enter a valid Map height.");
++                return;
++            }
++
++            try
++            {
++                this.map = new Map(width, height);
++            }
++            catch (ArgumentOutOfRangeException e)
++            {
++                this.ShowErrorMessage("Incorrect Map size", e.Message);
++                return;
++            }
++
++            var defaultMapTile = this.newMapWindow.SelectedMapTileType;
++
++            for (int x = 0; x < width; x++)
++            {
++                for (int y = 0; y < height; y++)
++                {
++                    this.map[x, y] = new MapTile(x,y,defaultMapTile);
++                }
++            }
++
++            this.newMapWindow.Close();
++        }
++
++        private void ShowErrorMessage(string title, string text)
++        {
++            MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
++        }
+     }
+ }
+diff --git a/LevelEditor.csproj b/LevelEditor.csproj
+index bcfa0ed..bf212b3 100644
+--- a/LevelEditor.csproj
++++ b/LevelEditor.csproj
+@@ -53,6 +53,9 @@
+       <Generator>MSBuild:Compile</Generator>
+       <SubType>Designer</SubType>
+     </ApplicationDefinition>
++    <Compile Include="View\NewMapWindow.xaml.cs">
++      <DependentUpon>NewMapWindow.xaml</DependentUpon>
++    </Compile>
+     <Page Include="View\AboutWindow.xaml">
+       <SubType>Designer</SubType>
+       <Generator>MSBuild:Compile</Generator>
+@@ -76,6 +79,10 @@
+       <DependentUpon>MainWindow.xaml</DependentUpon>
+       <SubType>Code</SubType>
+     </Compile>
++    <Page Include="View\NewMapWindow.xaml">
++      <SubType>Designer</SubType>
++      <Generator>MSBuild:Compile</Generator>
++    </Page>
+   </ItemGroup>
+   <ItemGroup>
+     <Compile Include="Properties\AssemblyInfo.cs">
+diff --git a/Model/Map.cs b/Model/Map.cs
+index 7adcf4e..d4e00e5 100644
+--- a/Model/Map.cs
++++ b/Model/Map.cs
+@@ -5,14 +5,45 @@
+ 
+ namespace LevelEditor.Model
+ {
++    using System;
+     using System.Windows.Markup.Primitives;
+ 
+     public class Map
+     {
++        private int width;
++        private int height;
++
+         public MapTile[,] Tiles { get; private set; }
+ 
+         public Map()
+         {
+         }
++
++        public Map(int width, int height)
++        {
++            if (width <= 0)
++            {
++                throw new ArgumentOutOfRangeException("width", "Width must be greater than 0.");
++            }
++
++            if (height <= 0)
++            {
++                throw new ArgumentOutOfRangeException("height", "height must be greater than 0.");
++            }
++
++            this.Tiles = new MapTile[width, height];
++        }
++
++        public MapTile this[int x, int y]
++        {
++            get
++            {
++                return this.Tiles[x, y];
++            }
++            set
++            {
++                this.Tiles[x, y] = value;
++            }
++        }
+     }
+ }
+\ No newline at end of file
+diff --git a/View/AboutWindow.xaml b/View/AboutWindow.xaml
+index 98a5527..9e3ad97 100644
+--- a/View/AboutWindow.xaml
++++ b/View/AboutWindow.xaml
+@@ -9,6 +9,6 @@
+             <LineBreak/>
+             LevelEditor V 0.1
+         </TextBlock>
+-        <Button Name="ButtonClose" Click="OnCLickButtonCloseAbout" Margin="0,244,0,0" Grid.ColumnSpan="2">Close Window</Button>
++        <Button Name="ButtonClose" Click="OnCLickButtonCloseAbout" Margin="0,244,0,0">Close Window</Button>
+     </Grid>
+ </Window>
+diff --git a/View/MainWindow.xaml b/View/MainWindow.xaml
+index d6cff5d..654b4ff 100644
+--- a/View/MainWindow.xaml
++++ b/View/MainWindow.xaml
+@@ -2,8 +2,24 @@
+         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         Title="Level Editor" Height="600" Width="800">
+-    <DockPanel Dock="Bottom" Width="200" Height="80">
+-        <Button Name="ButtonQuit" Width="50" Margin="5" Height="25" DockPanel.Dock="Left" Click="OnClickButtonQuit">Quit</Button>
+-        <Button Name="ButtonAbout" Width="50" Height="25" Margin="5" DockPanel.Dock="Right" Click="OnClickButtonAbout">About</Button>
++    <DockPanel>
++        <Menu DockPanel.Dock="Top">
++            <MenuItem Header="_Datei">
++                <MenuItem Command="ApplicationCommands.New"/>
++                <MenuItem Command="ApplicationCommands.Help"/>
++                <MenuItem Command="ApplicationCommands.Close"/>
++            </MenuItem>
++        </Menu>
+     </DockPanel>
++    <Window.CommandBindings>
++        <CommandBinding Command="ApplicationCommands.New"
++                        Executed="CommandExecutedNew"
++                        CanExecute="CommandCanExecuteNew"/>
++        <CommandBinding Command="ApplicationCommands.Help"
++                        Executed="CommandExecutedHelp"
++                        CanExecute="CommandCanExecuteHelp"/>
++        <CommandBinding Command="ApplicationCommands.Close"
++                        Executed="CommandExecutedClose"
++                        CanExecute="CommandCanExecuteClose"/>
++    </Window.CommandBindings>
+ </Window>
+diff --git a/View/MainWindow.xaml.cs b/View/MainWindow.xaml.cs
+index a3b6229..bd626c0 100644
+--- a/View/MainWindow.xaml.cs
++++ b/View/MainWindow.xaml.cs
+@@ -19,14 +19,34 @@
+             this.controler = (App)Application.Current;
+         }
+ 
+-        private void OnClickButtonQuit(object sender, RoutedEventArgs e)
++        private void CommandExecutedNew(object sender, ExecutedRoutedEventArgs e)
++        {
++            this.controler.NewMap();
++        }
++
++        private void CommandExecutedHelp(object sender, ExecutedRoutedEventArgs e)
++        {
++            this.controler.ShowHelpWindow();
++        }
++
++        private void CommandExecutedClose(object sender, ExecutedRoutedEventArgs e)
+         {
+             this.controler.Quit();
+         }
+ 
+-        private void OnClickButtonAbout(object sender, RoutedEventArgs e)
++        private void CommandCanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
++        {
++            e.CanExecute = true;
++        }
++
++        private void CommandCanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
++        {
++            e.CanExecute = true;
++        }
++
++        private void CommandCanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
+         {
+-            this.controler.ExecuteAbout();
++            e.CanExecute = true;
+         }
+     }
+ }
+-- 
+1.8.3.msysgit.0
+
