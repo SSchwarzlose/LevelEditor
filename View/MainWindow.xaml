@@ -4,7 +4,7 @@
         Title="Level Editor" Height="600" Width="800">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
+            <MenuItem Header="_Datei">
                 <MenuItem Command="ApplicationCommands.New"/>
                 <MenuItem Command="ApplicationCommands.Help"/>
                 <MenuItem Command="ApplicationCommands.Close"/>
