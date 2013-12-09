@@ -6,6 +6,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Datei">
                 <MenuItem Command="ApplicationCommands.New"/>
+                <MenuItem Command="ApplicationCommands.SaveAs"/>
                 <MenuItem Command="ApplicationCommands.Help"/>
                 <MenuItem Command="ApplicationCommands.Close"/>
             </MenuItem>
@@ -30,7 +31,7 @@
 
         <DockPanel DockPanel.Dock="Top">
             <StackPanel DockPanel.Dock="Left" Width="75">
-                <TextBlock Margin="5">Brush</TextBlock>
+                <TextBlock Margin="5">MapTile</TextBlock>
                 <StackPanel Margin="5" Name="BrushSelectionPanel" />
             </StackPanel>
 
@@ -38,12 +39,19 @@
                 <Canvas Name="MapCanvas"  />
             </ScrollViewer>
         </DockPanel>
+        
+        <ToolBarTray>
+            <ToolBar></ToolBar>
+        </ToolBarTray>
     </DockPanel>
 
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.New"
                     Executed="CommandExecutedNew"
                     CanExecute="CommandCanExecuteNew"/>
+        <CommandBinding Command="ApplicationCommands.SaveAs"
+                        Executed="CommandExecutedSaveAs"
+                        CanExecute="CommandCanExecuteSaveAs"/>
         <CommandBinding Command="ApplicationCommands.Help"
                     Executed="CommandExecutedHelp"
                     CanExecute="CommandCanExecuteHelp"/>

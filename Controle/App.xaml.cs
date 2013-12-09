@@ -17,6 +17,8 @@ namespace LevelEditor.Controle
     using LevelEditor.Model;
     using LevelEditor.View;
 
+    using Microsoft.Win32;
+
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
@@ -197,6 +199,39 @@ namespace LevelEditor.Controle
         public void OnBrushSelected(string brush)
         {
             this.currentBrush = this.tileTypes[brush];
+        }
+
+        public void ExecuteSaveAs()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+                                                {
+                                                    AddExtension = true,
+                                                    CheckFileExists = true,
+                                                    CheckPathExists = true,
+                                                    DefaultExt = ".xml",
+                                                    FileName = "NewMap",
+                                                    Filter = "Xml files (.xml) | *.xml",
+                                                    ValidateNames = true
+                                                };
+
+            var result = saveFileDialog.ShowDialog();
+
+            if (result != true)
+            {
+                return;
+            }
+
+            
+        }
+
+        public bool CanExecuteSaveAs()
+        {
+            if (this.map != null)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

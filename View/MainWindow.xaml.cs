@@ -162,5 +162,15 @@ namespace LevelEditor.View
             RadioButton radioButton = (RadioButton)sender;
             this.controler.OnBrushSelected((string)radioButton.Content);
         }
+
+        private void CommandExecutedSaveAs(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controler.ExecuteSaveAs();
+        }
+
+        private void CommandCanExecuteSaveAs(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.controler.CanExecuteSaveAs();
+        }
     }
 }
