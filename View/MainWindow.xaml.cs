@@ -25,6 +25,7 @@ namespace LevelEditor.View
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static RoutedCommand About = new RoutedCommand();
         private readonly App controler;
 
         /// <summary>
@@ -171,6 +172,16 @@ namespace LevelEditor.View
         private void CommandCanExecuteSaveAs(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.controler.CanExecuteSaveAs();
+        }
+
+        private void CommandExecutedAbout(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controler.ExecuteAbout();
+        }
+
+        private void CommandCanExecuteAbout(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.controler.CanExecuteAbout();
         }
     }
 }

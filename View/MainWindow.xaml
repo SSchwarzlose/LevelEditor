@@ -1,14 +1,18 @@
 ﻿<Window x:Class="LevelEditor.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:custom="clr-namespace:LevelEditor.View"
         Title="Level Editor" Height="600" Width="800">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Datei">
                 <MenuItem Command="ApplicationCommands.New"/>
                 <MenuItem Command="ApplicationCommands.SaveAs"/>
-                <MenuItem Command="ApplicationCommands.Help"/>
                 <MenuItem Command="ApplicationCommands.Close"/>
+            </MenuItem>
+            <MenuItem Header="_Extras">
+                <MenuItem Command="ApplicationCommands.Help"/>
+                <MenuItem Command="{x:Static custom:MainWindow.About}" Header="Über"></MenuItem>
             </MenuItem>
         </Menu>
 
@@ -20,6 +24,13 @@
                         <TextBlock>New Map</TextBlock>
                     </Button.ToolTip>
                 </Button>
+                <Button Command="ApplicationCommands.SaveAs">
+                    <Image Source="../Resources/Icons/Saveall_6518.png"/>
+                    <Button.ToolTip>
+                        <TextBlock>Speichern als</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Separator/>
                 <Button Command="ApplicationCommands.Help">
                     <Image Source="../Resources/Icons/StatusAnnotations_Help_and_inconclusive_16xLG.png" />
                     <Button.ToolTip>
@@ -55,6 +66,9 @@
         <CommandBinding Command="ApplicationCommands.Help"
                     Executed="CommandExecutedHelp"
                     CanExecute="CommandCanExecuteHelp"/>
+        <CommandBinding Command="{x:Static custom:MainWindow.About}"
+                        Executed="CommandExecutedAbout"
+                        CanExecute="CommandCanExecuteAbout"></CommandBinding>
         <CommandBinding Command="ApplicationCommands.Close"
                     Executed="CommandExecutedClose"
                     CanExecute="CommandCanExecuteClose"/>

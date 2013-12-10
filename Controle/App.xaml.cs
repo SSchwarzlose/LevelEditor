@@ -7,6 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+using System.Xml;
+
 namespace LevelEditor.Controle
 {
     using System;
@@ -37,7 +40,16 @@ namespace LevelEditor.Controle
         private Map map;
 
         private MapTileType currentBrush;
-        
+        private string MapFileExtension = ".map";
+        private string MapFileFilter = "Map files (.map) | *.map";
+        private string XmlelementWidth = "Width";
+
+        private string XmlElementHeight = "Height";
+        private string XmlElementTiles = "Tiles";
+        private string XmlElementPositionX = "X";
+        private string XmlElementPositionY = "Y";
+        private string XmlElementType = "Type";
+
         public void CloseAboutWindow()
         {
             this.aboutWindow.Close();
@@ -144,13 +156,7 @@ namespace LevelEditor.Controle
 
         public void ExecutedHelp()
         {
-            if (this.aboutWindow == null || !this.aboutWindow.IsLoaded)
-            {
-                this.aboutWindow = new AboutWindow();
-            }
-
-            this.aboutWindow.Show();
-            this.aboutWindow.Focus();
+            
         }
 
         public void ExecutedClose()
@@ -206,11 +212,10 @@ namespace LevelEditor.Controle
             SaveFileDialog saveFileDialog = new SaveFileDialog
                                                 {
                                                     AddExtension = true,
-                                                    CheckFileExists = true,
                                                     CheckPathExists = true,
-                                                    DefaultExt = ".xml",
-                                                    FileName = "NewMap",
-                                                    Filter = "Xml files (.xml) | *.xml",
+                                                    DefaultExt = MapFileExtension,
+                                                    FileName = "New Map",
+                                                    Filter = MapFileFilter,
                                                     ValidateNames = true
                                                 };
 
@@ -221,7 +226,34 @@ namespace LevelEditor.Controle
                 return;
             }
 
-            
+            using (var stream = saveFileDialog.OpenFile())
+            {
+                XmlWriterSettings settings = new XmlWriterSettings { Indent = true };
+
+                using (var writer = XmlWriter.Create(stream, settings))
+                {
+                    writer.WriteStartElement("Map");
+
+                    writer.WriteAttributeString("xmlns", "map", null, "http://www.npruehs.de/teaching/tool-developement/");
+
+                    writer.WriteElementString(XmlelementWidth, this.map.Width.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteElementString(XmlElementHeight, this.map.Height.ToString(CultureInfo.InvariantCulture));
+
+                    writer.WriteStartElement(XmlElementTiles);
+                    foreach (var mapTile in this.map.Tiles)
+                    {
+                        writer.WriteStartElement("MapTile");
+                        writer.WriteElementString(XmlElementPositionX, mapTile.Position.X.ToString(CultureInfo.InvariantCulture));
+                        writer.WriteElementString(XmlElementPositionY, mapTile.Position.Y.ToString(CultureInfo.InvariantCulture));
+                        writer.WriteElementString(XmlElementType, mapTile.Type);
+                        writer.WriteEndElement();
+                    }
+
+                    writer.WriteEndElement();
+
+                    writer.WriteEndElement();
+                }
+            }
         }
 
         public bool CanExecuteSaveAs()
@@ -232,6 +264,22 @@ namespace LevelEditor.Controle
             }
 
             return false;
+        }
+
+        public void ExecuteAbout()
+        {
+            if (this.aboutWindow == null || !this.aboutWindow.IsLoaded)
+            {
+                this.aboutWindow = new AboutWindow();
+            }
+
+            this.aboutWindow.Show();
+            this.aboutWindow.Focus();
+        }
+
+        public bool CanExecuteAbout()
+        {
+            return true;
         }
     }
 }
