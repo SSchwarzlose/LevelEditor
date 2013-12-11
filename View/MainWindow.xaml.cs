@@ -183,5 +183,15 @@ namespace LevelEditor.View
         {
             e.CanExecute = this.controler.CanExecuteAbout();
         }
+
+        private void CommandExecutedOpen(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controler.ExecuteOpen();
+        }
+
+        private void CommandCanExecuteOpen(object sender, CanExecuteRoutedEventArgs e)
+        {
+            this.controler.CanExecuteOpen();
+        }
     }
 }

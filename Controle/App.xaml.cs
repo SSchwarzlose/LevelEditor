@@ -285,5 +285,15 @@ namespace LevelEditor.Controle
         {
             return true;
         }
+
+        public void ExecuteOpen()
+        {
+            MessageBox.Show("OpenFileDialog will be done with next Patch");
+        }
+
+        public bool CanExecuteOpen()
+        {
+            return true;
+        }
     }
 }
