@@ -7,6 +7,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Datei">
                 <MenuItem Command="ApplicationCommands.New"/>
+                <MenuItem Command="ApplicationCommands.Open"/>
                 <MenuItem Command="ApplicationCommands.SaveAs"/>
                 <MenuItem Command="ApplicationCommands.Close"/>
             </MenuItem>
@@ -34,7 +35,7 @@
                 <Button Command="ApplicationCommands.Help">
                     <Image Source="../Resources/Icons/StatusAnnotations_Help_and_inconclusive_16xLG.png" />
                     <Button.ToolTip>
-                        <TextBlock>Help</TextBlock>
+                        <TextBlock>Öffnet das Hilfefenster</TextBlock>
                     </Button.ToolTip>
                 </Button>
             </ToolBar>
@@ -60,6 +61,9 @@
         <CommandBinding Command="ApplicationCommands.New"
                     Executed="CommandExecutedNew"
                     CanExecute="CommandCanExecuteNew"/>
+        <CommandBinding Command="ApplicationCommands.Open"
+                        Executed="CommandExecutedOpen"
+                        CanExecute="CommandCanExecuteOpen"/>
         <CommandBinding Command="ApplicationCommands.SaveAs"
                         Executed="CommandExecutedSaveAs"
                         CanExecute="CommandCanExecuteSaveAs"/>

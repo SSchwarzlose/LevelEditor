@@ -33,6 +33,8 @@ namespace LevelEditor.Controle
 
         private MainWindow mainWindow;
 
+        private HelpWindow helpWindow;
+
         private Dictionary<string, MapTileType> tileTypes;
 
         private Dictionary<string, BitmapImage> tileImages; 
@@ -156,7 +158,9 @@ namespace LevelEditor.Controle
 
         public void ExecutedHelp()
         {
-            
+            helpWindow = new HelpWindow();
+            this.helpWindow.Show();
+            this.helpWindow.Focus();
         }
 
         public void ExecutedClose()
