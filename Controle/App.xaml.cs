@@ -288,7 +288,25 @@ namespace LevelEditor.Controle
 
         public void ExecuteOpen()
         {
-            MessageBox.Show("OpenFileDialog will be done with next Patch");
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                AddExtension = true,
+                CheckFileExists = true,
+                CheckPathExists = true,
+                DefaultExt = MapFileExtension,
+                FileName = "Map",
+                Filter = MapFileFilter,
+                ValidateNames = true
+            };
+
+            var result = openFileDialog.ShowDialog();
+
+            if (result != true)
+            {
+                return;
+            }
+
+
         }
 
         public bool CanExecuteOpen()
