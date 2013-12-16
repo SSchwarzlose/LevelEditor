@@ -58,10 +58,21 @@
                 <Canvas Name="MapCanvas"  />
             </ScrollViewer>
         </DockPanel>
-        
-        <ToolBarTray>
-            <ToolBar></ToolBar>
-        </ToolBarTray>
+        <StatusBar VerticalAlignment="Bottom" Background="Beige" >
+            <StatusBarItem>
+                <ProgressBar Name="ProgressBar" Width="100" Height="20" Value="87"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="TextBlockStatusText">
+                    Ready
+                </TextBlock>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="TextBlockPStatus">
+                    (87%)
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
     </DockPanel>
 
     <Window.CommandBindings>
