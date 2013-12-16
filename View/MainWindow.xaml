@@ -14,6 +14,7 @@
             <MenuItem Header="_Extras">
                 <MenuItem Command="ApplicationCommands.Help"/>
                 <MenuItem Command="{x:Static custom:MainWindow.About}" Header="Über"></MenuItem>
+                <MenuItem Command="{x:Static custom:MainWindow.Clear}" Header="Map löschen"></MenuItem>
             </MenuItem>
         </Menu>
 
@@ -23,6 +24,12 @@
                     <Image Source="../Resources/Icons/document_16xLG.png" />
                     <Button.ToolTip>
                         <TextBlock>New Map</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Button Command="ApplicationCommands.Open">
+                    <Image Source="../resources/Icons/folder_Open_16xLG.png"/>
+                    <Button.ToolTip>
+                        <TextBlock>Open a map</TextBlock>
                     </Button.ToolTip>
                 </Button>
                 <Button Command="ApplicationCommands.SaveAs">
@@ -73,6 +80,9 @@
         <CommandBinding Command="{x:Static custom:MainWindow.About}"
                         Executed="CommandExecutedAbout"
                         CanExecute="CommandCanExecuteAbout"></CommandBinding>
+        <CommandBinding Command="{x:Static custom:MainWindow.Clear}"
+                        Executed="CommandExecutedClear"
+                        CanExecute="CommandCanExecuteClear"/>
         <CommandBinding Command="ApplicationCommands.Close"
                     Executed="CommandExecutedClose"
                     CanExecute="CommandCanExecuteClose"/>

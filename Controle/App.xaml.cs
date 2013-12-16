@@ -8,6 +8,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.IO;
+using System.Windows.Media;
 using System.Xml;
 
 namespace LevelEditor.Controle
@@ -42,15 +44,15 @@ namespace LevelEditor.Controle
         private Map map;
 
         private MapTileType currentBrush;
-        private string MapFileExtension = ".map";
-        private string MapFileFilter = "Map files (.map) | *.map";
-        private string XmlelementWidth = "Width";
+        private const string MapFileExtension = ".map";
+        private const string MapFileFilter = "Map files (.map) | *.map";
+        private const string XmlelementWidth = "Width";
 
-        private string XmlElementHeight = "Height";
-        private string XmlElementTiles = "Tiles";
-        private string XmlElementPositionX = "X";
-        private string XmlElementPositionY = "Y";
-        private string XmlElementType = "Type";
+        private const string XmlElementHeight = "Height";
+        private const string XmlElementTiles = "Tiles";
+        private const string XmlElementPositionX = "X";
+        private const string XmlElementPositionY = "Y";
+        private const string XmlElementType = "Type";
 
         public void CloseAboutWindow()
         {
@@ -288,13 +290,14 @@ namespace LevelEditor.Controle
 
         public void ExecuteOpen()
         {
+            // Show open file dialog box.
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 AddExtension = true,
                 CheckFileExists = true,
                 CheckPathExists = true,
                 DefaultExt = MapFileExtension,
-                FileName = "Map",
+                FileName = "Another Map",
                 Filter = MapFileFilter,
                 ValidateNames = true
             };
@@ -306,12 +309,86 @@ namespace LevelEditor.Controle
                 return;
             }
 
+            // Open map file.
+            using (var stream = openFileDialog.OpenFile())
+            {
+                using (var reader = XmlReader.Create(stream))
+                {
+                    try
+                    {
+                        // Read document element.
+                        reader.Read();
 
+                        // Read map dimensions.
+                        reader.ReadToFollowing(XmlelementWidth);
+                        reader.ReadStartElement();
+                        var width = reader.ReadContentAsInt();
+
+                        reader.ReadToFollowing(XmlElementHeight);
+                        reader.ReadStartElement();
+                        var height = reader.ReadContentAsInt();
+
+                        // Create new map.
+                        var loadedMap = new Map(width, height);
+
+                        // Read map tiles.
+                        reader.ReadToFollowing(XmlElementTiles);
+
+                        for (var i = 0; i < width * height; i++)
+                        {
+                            reader.ReadToFollowing(XmlElementPositionX);
+                            reader.ReadStartElement();
+                            var x = reader.ReadContentAsInt();
+
+                            reader.ReadToFollowing(XmlElementPositionY);
+                            reader.ReadStartElement();
+                            var y = reader.ReadContentAsInt();
+
+                            reader.ReadToFollowing(XmlElementType);
+                            reader.ReadStartElement();
+                            var type = reader.ReadContentAsString();
+
+                            var mapTile = new MapTile(x, y, type);
+                            loadedMap[x, y] = mapTile;
+                        }
+
+                        // Show new map tiles.
+                        this.map = loadedMap;
+                        this.UpdateCanvas();
+                    }
+                    catch (XmlException)
+                    {
+                        this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+                    }
+                    catch (InvalidCastException)
+                    {
+                        this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        this.ShowErrorMessage("Incorrect map file", "Please specify a valid map file!");
+                    }
+                }
+            }
         }
 
         public bool CanExecuteOpen()
         {
             return true;
+        }
+
+        public void ExecuteClear()
+        {
+            this.mainWindow.MapCanvas.Children.Clear();
+        }
+
+        public bool CanExecuteClear()
+        {
+            if (this.map != null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

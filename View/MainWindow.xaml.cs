@@ -26,6 +26,7 @@ namespace LevelEditor.View
     public partial class MainWindow : Window
     {
         public static RoutedCommand About = new RoutedCommand();
+        public static RoutedUICommand Clear = new RoutedUICommand();
         private readonly App controler;
 
         /// <summary>
@@ -59,6 +60,11 @@ namespace LevelEditor.View
             this.controler.ExecutedClose();
         }
 
+        private void CommandExecutedClear(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controler.ExecuteClear();
+        }
+
         private void CommandCanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.controler.CanExecuteNew();
@@ -72,6 +78,11 @@ namespace LevelEditor.View
         private void CommandCanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = this.controler.CanExecuteClose();
+        }
+
+        private void CommandCanExecuteClear(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.controler.CanExecuteClear();
         }
 
         public void UpdateMapCanvas(Map map)
