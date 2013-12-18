@@ -1,0 +1,101 @@
+﻿<Window x:Class="LevelEditor.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:custom="clr-namespace:LevelEditor.View"
+        Title="Level Editor" Height="600" Width="800">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_Datei">
+                <MenuItem Command="ApplicationCommands.New"/>
+                <MenuItem Command="ApplicationCommands.Open"/>
+                <MenuItem Command="ApplicationCommands.SaveAs"/>
+                <MenuItem Command="ApplicationCommands.Close"/>
+            </MenuItem>
+            <MenuItem Header="_Extras">
+                <MenuItem Command="ApplicationCommands.Help"/>
+                <MenuItem Command="{x:Static custom:MainWindow.About}" Header="Über"></MenuItem>
+                <MenuItem Command="{x:Static custom:MainWindow.Clear}" Header="Map löschen"></MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Command="ApplicationCommands.New">
+                    <Image Source="../Resources/Icons/document_16xLG.png" />
+                    <Button.ToolTip>
+                        <TextBlock>New Map</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Button Command="ApplicationCommands.Open">
+                    <Image Source="../resources/Icons/folder_Open_16xLG.png"/>
+                    <Button.ToolTip>
+                        <TextBlock>Open a map</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Button Command="ApplicationCommands.SaveAs">
+                    <Image Source="../Resources/Icons/Saveall_6518.png"/>
+                    <Button.ToolTip>
+                        <TextBlock>Speichern als</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Separator/>
+                <Button Command="ApplicationCommands.Help">
+                    <Image Source="../Resources/Icons/StatusAnnotations_Help_and_inconclusive_16xLG.png" />
+                    <Button.ToolTip>
+                        <TextBlock>Öffnet das Hilfefenster</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+            </ToolBar>
+        </ToolBarTray>
+
+        <DockPanel DockPanel.Dock="Top">
+            <StackPanel DockPanel.Dock="Left" Width="75">
+                <TextBlock Margin="5">MapTile</TextBlock>
+                <StackPanel Margin="5" Name="BrushSelectionPanel" />
+            </StackPanel>
+
+            <ScrollViewer DockPanel.Dock="Right" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Canvas Name="MapCanvas"  />
+            </ScrollViewer>
+        </DockPanel>
+        <StatusBar VerticalAlignment="Bottom" Background="Beige" >
+            <StatusBarItem>
+                <ProgressBar Name="ProgressBar" Width="100" Height="20" Value="87"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="TextBlockStatusText">
+                    Ready
+                </TextBlock>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="TextBlockPStatus">
+                    (87%)
+                </TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+    </DockPanel>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New"
+                    Executed="CommandExecutedNew"
+                    CanExecute="CommandCanExecuteNew"/>
+        <CommandBinding Command="ApplicationCommands.Open"
+                        Executed="CommandExecutedOpen"
+                        CanExecute="CommandCanExecuteOpen"/>
+        <CommandBinding Command="ApplicationCommands.SaveAs"
+                        Executed="CommandExecutedSaveAs"
+                        CanExecute="CommandCanExecuteSaveAs"/>
+        <CommandBinding Command="ApplicationCommands.Help"
+                    Executed="CommandExecutedHelp"
+                    CanExecute="CommandCanExecuteHelp"/>
+        <CommandBinding Command="{x:Static custom:MainWindow.About}"
+                        Executed="CommandExecutedAbout"
+                        CanExecute="CommandCanExecuteAbout"></CommandBinding>
+        <CommandBinding Command="{x:Static custom:MainWindow.Clear}"
+                        Executed="CommandExecutedClear"
+                        CanExecute="CommandCanExecuteClear"/>
+        <CommandBinding Command="ApplicationCommands.Close"
+                    Executed="CommandExecutedClose"
+                    CanExecute="CommandCanExecuteClose"/>
+    </Window.CommandBindings>
+</Window>

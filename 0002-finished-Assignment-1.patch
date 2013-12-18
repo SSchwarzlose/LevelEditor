@@ -1,0 +1,295 @@
+From 0ef26bedb4f98e37aa96cc52d7b1ce5220df2b18 Mon Sep 17 00:00:00 2001
+From: SSchwarzlose <saschaschwarzlose@web.de>
+Date: Fri, 6 Dec 2013 13:19:59 +0100
+Subject: [PATCH 2/2] finished Assignment #1
+
+---
+ Controle/App.xaml.cs    | 60 +++++++++++++++++++++++++++++++++++--------------
+ LevelEditor.csproj      |  6 +++++
+ Model/MapTile.cs        |  8 +++----
+ Model/MapTileType.cs    | 22 +++++++++++++++---
+ Model/Vector2I.cs       | 24 +++++++++++++-------
+ View/MainWindow.xaml    | 17 ++++++++++++++
+ View/MainWindow.xaml.cs | 12 +++++-----
+ 7 files changed, 111 insertions(+), 38 deletions(-)
+
+diff --git a/Controle/App.xaml.cs b/Controle/App.xaml.cs
+index 62e554c..d8f4d5e 100644
+--- a/Controle/App.xaml.cs
++++ b/Controle/App.xaml.cs
+@@ -20,28 +20,11 @@
+ 
+         private Map map;
+ 
+-        public void Quit()
+-        {
+-            this.Shutdown();
+-        }
+-
+         public void CloseAboutWindow()
+         {
+             this.aboutWindow.Close();
+         }
+ 
+-        public void NewMap()
+-        {
+-            newMapWindow = new NewMapWindow();
+-            newMapWindow.Show();
+-        }
+-
+-        public void ShowHelpWindow()
+-        {
+-            this.aboutWindow = new AboutWindow();
+-            aboutWindow.Show();
+-        }
+-
+         private void OnStartup(object sender, StartupEventArgs e)
+         {
+             this.tileTypes = new Dictionary<string, MapTileType>();
+@@ -107,5 +90,48 @@
+         {
+             MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.Cancel);
+         }
++
++        internal void ExecutedNew()
++        {
++            if (this.newMapWindow == null || !this.newMapWindow.IsLoaded)
++            {
++                this.newMapWindow = new NewMapWindow();
++                this.newMapWindow.SetMapTileTypes(this.tileTypes.Keys);
++            }
++
++            this.newMapWindow.Show();
++            this.newMapWindow.Focus();
++        }
++
++        public void ExecutedHelp()
++        {
++            if (this.aboutWindow == null || !this.aboutWindow.IsLoaded)
++            {
++                this.aboutWindow = new AboutWindow();
++            }
++
++            this.aboutWindow.Show();
++            this.aboutWindow.Focus();
++        }
++
++        public void ExecutedClose()
++        {
++            this.Shutdown();
++        }
++
++        public bool CanExecuteNew()
++        {
++            return true;
++        }
++
++        public bool CanExcecuteHelp()
++        {
++            return true;
++        }
++
++        public bool CanExecuteClose()
++        {
++            return true;
++        }
+     }
+ }
+diff --git a/LevelEditor.csproj b/LevelEditor.csproj
+index bf212b3..8cb76db 100644
+--- a/LevelEditor.csproj
++++ b/LevelEditor.csproj
+@@ -112,6 +112,12 @@
+     <None Include="App.config" />
+   </ItemGroup>
+   <ItemGroup />
++  <ItemGroup>
++    <Resource Include="Resources\Icons\StatusAnnotations_Help_and_inconclusive_16xLG.png" />
++  </ItemGroup>
++  <ItemGroup>
++    <Resource Include="Resources\Icons\document_16xLG.png" />
++  </ItemGroup>
+   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+        Other similar extension points exist, see Microsoft.Common.targets.
+diff --git a/Model/MapTile.cs b/Model/MapTile.cs
+index 96a4c8b..259de9c 100644
+--- a/Model/MapTile.cs
++++ b/Model/MapTile.cs
+@@ -7,15 +7,15 @@ namespace LevelEditor.Model
+ {
+     public class MapTile
+     {
+-        public Vector2I Position { get; private set; }
+-        public string Type { get; private set; }
++        public Vector2I Position { get; set; }
++        public string Type { get; set; }
+ 
+         public MapTile()
+         {
+         }
+ 
+-        public MapTile(int x, int y, string tileType)
+-            : this(new Vector2I(x, y), tileType)
++        public MapTile(int x, int y, string type)
++            : this(new Vector2I(x, y), type)
+         {
+         }
+ 
+diff --git a/Model/MapTileType.cs b/Model/MapTileType.cs
+index 4682ba9..379110d 100644
+--- a/Model/MapTileType.cs
++++ b/Model/MapTileType.cs
+@@ -5,16 +5,32 @@
+ 
+ namespace LevelEditor.Model
+ {
++    using System;
++
+     public class MapTileType
+     {
+-        public string Name { get; private set; }
+-        public int MovementCost { get; private set; }
+-
+         public MapTileType(int movementCost, string name)
+         {
++            if (movementCost <= 0)
++            {
++                throw new ArgumentOutOfRangeException("movementCost", "Movementcost must be greater than 0.");
++            }
++
++            if (string.IsNullOrEmpty(name))
++            {
++                throw new ArgumentNullException("name");
++            }
++
+             this.Name = name;
+ 
+             this.MovementCost = movementCost;
+         }
++
++        /// <summary>
++        /// Gets the name.
++        /// </summary>
++        public string Name { get; private set; }
++
++        public int MovementCost { get; private set; }
+     }
+ }
+\ No newline at end of file
+diff --git a/Model/Vector2I.cs b/Model/Vector2I.cs
+index b69b3c1..83f6fae 100644
+--- a/Model/Vector2I.cs
++++ b/Model/Vector2I.cs
+@@ -11,19 +11,27 @@ namespace LevelEditor.Model
+ 
+         private readonly int y;
+ 
+-        public int X { get; private set; }
+-        public int Y { get; private set; }
+-
+-        public Vector2I(int x, int y)
++        public int X
+         {
+-            if (x >= 0)
++            get
+             {
+-                this.x = x;
++                return this.x;
+             }
+-            if (y >= 0)
++        }
++
++        public int Y
++        {
++            get
+             {
+-                this.y = y;
++                return this.y;
+             }
++            
++        }
++
++        public Vector2I(int x, int y)
++        {
++            this.x = x;
++            this.y = y;
+         }
+     }
+ }
+\ No newline at end of file
+diff --git a/View/MainWindow.xaml b/View/MainWindow.xaml
+index 654b4ff..e79e8d1 100644
+--- a/View/MainWindow.xaml
++++ b/View/MainWindow.xaml
+@@ -10,7 +10,24 @@
+                 <MenuItem Command="ApplicationCommands.Close"/>
+             </MenuItem>
+         </Menu>
++        <ToolBarTray DockPanel.Dock="Top">
++            <ToolBar>
++                <Button Command="ApplicationCommands.New">
++                    <Image Source="..\Resources\Icons\document_16xLG.png"/>
++                    <Button.ToolTip>
++                        <TextBlock>Neue Map erstellen</TextBlock>
++                    </Button.ToolTip>
++                </Button>
++                <Button Command="ApplicationCommands.Help">
++                    <Image Source="..\Resources\Icons/StatusAnnotations_Help_and_inconclusive_16xLG.png"/>
++                    <Button.ToolTip>
++                        <TextBlock>Zeigt das Hilfefenster</TextBlock>
++                    </Button.ToolTip>
++                </Button>
++            </ToolBar>
++        </ToolBarTray>
+     </DockPanel>
++    
+     <Window.CommandBindings>
+         <CommandBinding Command="ApplicationCommands.New"
+                         Executed="CommandExecutedNew"
+diff --git a/View/MainWindow.xaml.cs b/View/MainWindow.xaml.cs
+index bd626c0..d0fff00 100644
+--- a/View/MainWindow.xaml.cs
++++ b/View/MainWindow.xaml.cs
+@@ -21,32 +21,32 @@
+ 
+         private void CommandExecutedNew(object sender, ExecutedRoutedEventArgs e)
+         {
+-            this.controler.NewMap();
++            this.controler.ExecutedNew();
+         }
+ 
+         private void CommandExecutedHelp(object sender, ExecutedRoutedEventArgs e)
+         {
+-            this.controler.ShowHelpWindow();
++            this.controler.ExecutedHelp();
+         }
+ 
+         private void CommandExecutedClose(object sender, ExecutedRoutedEventArgs e)
+         {
+-            this.controler.Quit();
++            this.controler.ExecutedClose();
+         }
+ 
+         private void CommandCanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
+         {
+-            e.CanExecute = true;
++            e.CanExecute = this.controler.CanExecuteNew();
+         }
+ 
+         private void CommandCanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
+         {
+-            e.CanExecute = true;
++            e.CanExecute = this.controler.CanExcecuteHelp();
+         }
+ 
+         private void CommandCanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
+         {
+-            e.CanExecute = true;
++            e.CanExecute = this.controler.CanExecuteClose();
+         }
+     }
+ }
+-- 
+1.8.3.msysgit.0
+
