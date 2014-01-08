@@ -11,10 +11,12 @@
                 <MenuItem Command="ApplicationCommands.SaveAs"/>
                 <MenuItem Command="ApplicationCommands.Close"/>
             </MenuItem>
+            <MenuItem Header="_Bearbeiten">
+                <MenuItem Command="{x:Static custom:MainWindow.Clear}" Header="Map löschen"></MenuItem>
+            </MenuItem>
             <MenuItem Header="_Extras">
                 <MenuItem Command="ApplicationCommands.Help"/>
                 <MenuItem Command="{x:Static custom:MainWindow.About}" Header="Über"></MenuItem>
-                <MenuItem Command="{x:Static custom:MainWindow.Clear}" Header="Map löschen"></MenuItem>
             </MenuItem>
         </Menu>
 
