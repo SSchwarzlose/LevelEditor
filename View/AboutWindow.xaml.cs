@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 
 namespace LevelEditor.View
 {
-    using LevelEditor.Controle;
+    using LevelEditor.Controller;
 
     /// <summary>
     /// Interaction logic for AboutWindow.xaml

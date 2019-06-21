@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace LevelEditor.View
 {
-    using LevelEditor.Controle;
+    using LevelEditor.Controller;
 
     /// <summary>
     /// Interaction logic for NewMapWindow

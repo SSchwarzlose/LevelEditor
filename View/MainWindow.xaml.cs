@@ -17,17 +17,17 @@ namespace LevelEditor.View
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
 
-    using LevelEditor.Controle;
+    using LevelEditor.Controller;
     using LevelEditor.Model;
+    using LevelEditor.Commands;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static RoutedCommand About = new RoutedCommand();
         public static RoutedUICommand Clear = new RoutedUICommand();
-        private readonly App controler;
+        private readonly App controller;
 
         /// <summary>
         /// The tile size in pixels.
@@ -42,47 +42,47 @@ namespace LevelEditor.View
         {
             InitializeComponent();
 
-            this.controler = (App)Application.Current;
+            this.controller = (App)Application.Current;
         }
 
         private void CommandExecutedNew(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.ExecutedNew();
+            this.controller.ExecutedNew();
         }
 
         private void CommandExecutedHelp(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.ExecutedHelp();
+            this.controller.ExecutedHelp();
         }
 
         private void CommandExecutedClose(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.ExecutedClose();
+            this.controller.ExecutedClose();
         }
 
         private void CommandExecutedClear(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.ExecuteClear();
+            this.controller.ExecuteClear();
         }
 
         private void CommandCanExecuteNew(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.controler.CanExecuteNew();
+            e.CanExecute = this.controller.CanExecuteNew();
         }
 
         private void CommandCanExecuteHelp(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.controler.CanExcecuteHelp();
+            e.CanExecute = this.controller.CanExcecuteHelp();
         }
 
         private void CommandCanExecuteClose(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.controler.CanExecuteClose();
+            e.CanExecute = this.controller.CanExecuteClose();
         }
 
         private void CommandCanExecuteClear(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.controler.CanExecuteClear();
+            e.CanExecute = this.controller.CanExecuteClear();
         }
 
         public void UpdateMapCanvas(Map map)
@@ -104,7 +104,7 @@ namespace LevelEditor.View
                                     {
                                         Width = TileSizeInPixels,
                                         Height = TileSizeInPixels,
-                                        Source = this.controler.GetTileImage(mapTile.Type),
+                                        Source = this.controller.GetTileImage(mapTile.Type),
                                         Tag = new Vector2I(x, y)
                                     };
 
@@ -132,7 +132,7 @@ namespace LevelEditor.View
             var tile = (Image)sender;
             var position = (Vector2I)tile.Tag;
 
-            this.controler.OnTileClicked(position);
+            this.controller.OnTileClicked(position);
         }
 
         private void OnBrushUp(object sender, MouseButtonEventArgs e)
@@ -172,37 +172,52 @@ namespace LevelEditor.View
         private void OnBrushSelected(object sender, RoutedEventArgs e)
         {
             RadioButton radioButton = (RadioButton)sender;
-            this.controler.OnBrushSelected((string)radioButton.Content);
+            this.controller.OnBrushSelected((string)radioButton.Content);
         }
 
         private void CommandExecutedSaveAs(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.ExecuteSaveAs();
+            this.controller.ExecuteSaveAs();
         }
 
         private void CommandCanExecuteSaveAs(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.controler.CanExecuteSaveAs();
+            e.CanExecute = this.controller.CanExecuteSaveAs();
         }
 
         private void CommandExecutedAbout(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.ExecuteAbout();
+            this.controller.ExecuteAbout();
         }
 
         private void CommandCanExecuteAbout(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.controler.CanExecuteAbout();
+            e.CanExecute = this.controller.CanExecuteAbout();
         }
 
         private void CommandExecutedOpen(object sender, ExecutedRoutedEventArgs e)
         {
-            this.controler.ExecuteOpen();
+            this.controller.ExecuteOpen();
         }
 
         private void CommandCanExecuteOpen(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.controler.CanExecuteOpen();
+            e.CanExecute = this.controller.CanExecuteOpen();
+        }
+
+        private void CommandCanExecuteClearMap(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = controller.CanExecuteClear();
+        }
+
+        private void CommandExecutedClearMap(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.controller.ExecuteClear();
+        }
+
+        private void OnClearClick(object sender, RoutedEventArgs e)
+        {
+            this.controller.ExecuteClear();
         }
     }
 }

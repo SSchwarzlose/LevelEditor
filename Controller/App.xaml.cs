@@ -12,7 +12,7 @@ using System.IO;
 using System.Windows.Media;
 using System.Xml;
 
-namespace LevelEditor.Controle
+namespace LevelEditor.Controller
 {
     using System;
     using System.Collections.Generic;
